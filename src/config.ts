@@ -1,6 +1,6 @@
 // API configuration
 export const API_URL = import.meta.env.PROD
-  ? '' // Empty string means same origin in production
+  ? 'https://pandas-ai-backend.onrender.com' // Render后端URL
   : 'http://localhost:3001'; // Development API URL
 
 // Default API settings
