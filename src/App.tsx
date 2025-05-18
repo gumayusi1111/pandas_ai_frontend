@@ -6,7 +6,7 @@ import Sidebar from './components/Sidebar';
 import InputForm from './components/InputForm';
 import CodeOutput from './components/CodeOutput';
 import Footer from './components/Footer';
-import ApiSettings from './components/ApiSettings';
+// import ApiSettings from './components/ApiSettings';
 
 // Define types for history item and supported file formats
 interface HistoryItem {
