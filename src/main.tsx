@@ -5,7 +5,7 @@ import AIProviderSettingsPage from './app/settings/ai-provider/page'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 // Import Font Awesome
-import '@fortawesome/fontawesome-free/css/all.min.css'
+// import '@fortawesome/fontawesome-free/css/all.min.css'; // 移除这一行
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

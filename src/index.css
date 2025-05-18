@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* Global styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --primary-color: #4285f4;
   --primary-hover: #357ae8;
@@ -12,7 +15,7 @@
   --error-color: #ea4335;
   --success-color: #34a853;
   --warning-color: #fbbc05;
-  --background-color: #f9f9f9;
+  --background-color: #f9f9f9; /* This is your original background color */
   --card-background: #ffffff;
   --code-background: #f5f7f9;
   --sidebar-width: 280px;
@@ -32,7 +35,7 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.6;
   color: var(--text-color);
-  background-color: var(--background-color);
+  background-color: var(--background-color); /* Should now use your original #f9f9f9 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -357,7 +360,7 @@ small i {
 }
 
 .code-container {
-  background-color: #f8f9fa;
+  background-color: #f8f9fa; /* Consider var(--code-background) */
   border-radius: 10px;
   padding: 1.5rem;
   position: relative;
@@ -365,7 +368,7 @@ small i {
   height: 300px;
   overflow-y: auto;
   overflow-x: auto;
-  border: 1px solid #e9ecef;
+  border: 1px solid #e9ecef; /* Consider var(--border-color) or a lighter shade */
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
@@ -385,7 +388,7 @@ small i {
 }
 
 .error-message {
-  background-color: #fef2f2;
+  background-color: #fef2f2; /* Consider a variable e.g., var(--error-background-light) */
   color: var(--error-color);
   padding: 1.2rem;
   margin: 1.2rem 0;
@@ -405,7 +408,7 @@ small i {
   margin-top: 1.2rem;
   font-size: 0.95rem;
   color: #555;
-  background-color: rgba(52, 168, 83, 0.05);
+  background-color: rgba(52, 168, 83, 0.05); /* Consider var(--success-background-light) */
   padding: 1rem;
   border-radius: 12px;
   border-left: 4px solid var(--success-color);
@@ -887,145 +890,7 @@ button:hover,
   transition: all 0.2s ease;
 }
 
-/* API Settings styles */
-.api-settings-container {
-  position: relative;
-}
-
-.api-settings-toggle {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.api-settings-toggle:hover {
-  background-color: var(--primary-hover);
-  transform: scale(1.05);
-}
-
-.api-settings-toggle span {
-  display: none;
-}
-
-.api-settings-toggle i {
-  font-size: 1.2rem;
-}
-
-.api-settings-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  animation: fadeIn 0.3s ease;
-}
-
-.api-settings-content {
-  background-color: #fff;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-.api-settings-header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.api-settings-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.api-settings-header .close-btn {
-  background: none;
-  color: white;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-}
-
-.api-settings-header .close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.api-settings-content form {
-  padding: 1.5rem;
-}
-
-.api-settings-content input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  margin-top: 0.5rem;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.api-settings-content input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
-}
-
-.api-settings-content .form-group {
-  margin-bottom: 1.5rem;
-}
-
-.settings-save-btn {
-  background-color: var(--success-color);
-}
-
-.settings-save-btn:hover {
-  background-color: #2a8c44;
-}
-
-.settings-saved-message {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 1rem;
-  color: var(--success-color);
-  font-weight: 500;
-}
-
-.settings-saved-message i {
-  margin-right: 0.5rem;
-}
-
-/* 图表预览模态框样式 */
+/* Chart Modal Styles (from original, assuming these are global or used with the above chart styles) */
 .chart-modal-overlay {
   position: fixed;
   top: 0;

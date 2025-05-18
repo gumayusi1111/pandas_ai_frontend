@@ -1,0 +1,358 @@
+/* AIProviderSettingsPage.module.css */
+
+.pageContainer {
+  padding: 2rem;
+  font-family: var(--font-roboto, 'Roboto', sans-serif); /* Assuming you might set --font-roboto in index.css */
+  max-width: 900px;
+  margin: 2rem auto;
+  background-color: #f9fafb; /* Lighter gray background */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pageTitle {
+  border-bottom: 2px solid var(--primary-color, #4285f4);
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+  font-size: 1.875rem; /* Tailwind's text-3xl */
+  font-weight: 600; /* Tailwind's font-semibold */
+  color: var(--text-color, #202124);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageTitle svg { /* For an optional icon */
+  width: 28px;
+  height: 28px;
+  color: var(--primary-color, #4285f4);
+}
+
+.section {
+  margin-bottom: 2.5rem;
+  padding: 1.75rem;
+  border: 1px solid var(--border-color, #dadce0);
+  border-radius: 10px;
+  background-color: #ffffff; /* White background for sections */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem; /* Tailwind's text-2xl */
+  font-weight: 500; /* Tailwind's font-medium */
+  color: var(--primary-color, #4285f4);
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* More space between form elements */
+}
+
+.formGroup {
+  margin-bottom: 0; /* Remove default margin as gap handles it */
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem; /* Tailwind's text-sm */
+  font-weight: 500; /* Tailwind's font-medium */
+  color: #374151; /* Tailwind's text-gray-700 */
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.75rem 1rem; /* Slightly more padding */
+  border: 1px solid #d1d5db; /* Tailwind's border-gray-300 */
+  border-radius: 8px; /* More rounded corners */
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  font-size: 0.9375rem;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #4285f4);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2); /* Focus ring */
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.buttonPrimary {
+  background-color: var(--primary-color, #4285f4);
+  color: white;
+}
+.buttonPrimary:hover {
+  background-color: var(--primary-hover, #357ae8);
+}
+.buttonPrimary:disabled {
+  background-color: #a0c3ff;
+  cursor: not-allowed;
+}
+
+.buttonSecondary {
+  background-color: #6b7280; /* Tailwind's bg-gray-500 */
+  color: white;
+}
+.buttonSecondary:hover {
+  background-color: #4b5563; /* Tailwind's bg-gray-600 */
+}
+.buttonSecondary:disabled {
+  background-color: #b0b4ba;
+  cursor: not-allowed;
+}
+
+.buttonDanger {
+  background-color: var(--error-color, #ea4335);
+  color: white;
+}
+.buttonDanger:hover {
+  background-color: #d93025;
+}
+
+.buttonWarning {
+  background-color: #fca5a5; /* Tailwind's bg-yellow-400 (using red for better visibility) */
+  color: #450a0a; /* Tailwind's text-gray-800 */
+}
+
+.buttonWarning:hover {
+  background-color: #f87171; /* Lighter red for hover */
+}
+
+
+.buttonSuccess {
+  background-color: var(--success-color, #34a853);
+  color: white;
+}
+.buttonSuccess:hover {
+  background-color: #2a8c44;
+}
+
+
+.buttonGroup {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+.configList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.configCard {
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb; /* Tailwind's border-gray-200 */
+  border-radius: 10px; /* More rounded */
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease-in-out;
+}
+
+.configCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.configCardActive {
+  border-left: 5px solid var(--primary-color, #4285f4);
+  background-color: #eff6ff; /* Tailwind's bg-blue-50 */
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15);
+}
+
+.configCardHeader {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem; /* Tailwind's text-xl */
+  font-weight: 500; /* Tailwind's font-medium */
+  color: #1f2937; /* Tailwind's text-gray-800 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activeBadge {
+  margin-left: 0.5rem;
+  font-size: 0.75rem; /* Tailwind's text-xs */
+  font-weight: 500;
+  color: var(--primary-color, #4285f4);
+  background-color: #dbeafe; /* Tailwind's bg-blue-100 */
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px; /* Full pill shape */
+}
+
+.configDetail {
+  font-size: 0.875rem; /* Tailwind's text-sm */
+  color: #4b5563; /* Tailwind's text-gray-600 */
+  margin-bottom: 0.3rem;
+  word-break: break-all; /* Prevent long URLs from breaking layout */
+}
+
+.configDetailKey {
+  font-weight: 500; /* Tailwind's font-medium */
+  color: #374151; /* Tailwind's text-gray-700 */
+}
+
+.configActions {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap */
+  gap: 0.5rem;
+  margin-top: auto; /* Pushes to the bottom */
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6; /* Tailwind's border-gray-100 */
+}
+
+.configActions .button { /* Specific styling for action buttons inside cards */
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem; /* Smaller text for card action buttons */
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modalOverlayVisible {
+  opacity: 1;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+  transform: scale(0.95);
+  transition: transform 0.3s ease-in-out;
+}
+
+.modalOverlayVisible .modalContent {
+  transform: scale(1);
+}
+
+.modalTitle {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.modalText {
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.apiKeyToggle {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #f9fafb; /* Tailwind's bg-gray-50 */
+  color: #374151;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apiKeyToggle:hover {
+  background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
+}
+
+.apiKeyToggle svg {
+  width: 1em; /* Adjust icon size to match text */
+  height: 1em;
+}
+
+.loadingMessage {
+  color: var(--primary-color, #4285f4);
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.errorMessage, .successMessage {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.errorMessage {
+  color: #991b1b; /* Tailwind's text-red-800 */
+  background-color: #fee2e2; /* Tailwind's bg-red-100 */
+  border: 1px solid #fecaca; /* Tailwind's border-red-200 */
+}
+
+.successMessage {
+  color: #14532d; /* Tailwind's text-green-800 */
+  background-color: #dcfce7; /* Tailwind's bg-green-100 */
+  border: 1px solid #bbf7d0; /* Tailwind's border-green-200 */
+}
+
+.errorMessage svg, .successMessage svg {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+} 

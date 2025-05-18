@@ -319,8 +319,8 @@ function App() {
           {/* Footer */}
           <Footer />
           
-          {/* API Settings component */}
-          <ApiSettings onSettingsSaved={() => console.log('API Settings updated')} />
+          {/* API Settings component - Temporarily removed */}
+          {/* <ApiSettings onSettingsSaved={() => console.log('API Settings updated')} /> */}
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { FormEvent } from 'react'; // Corrected import
 import { API_URL } from '../../../config'; // Assuming config.ts is 3 levels up
+import styles from './AIProviderSettingsPage.module.css'; // Import CSS Module
 
 // Interface for a single AI Configuration item in the list
 interface AIConfigItem {
@@ -70,14 +71,14 @@ export default function AIProviderSettingsPage() {
     try {
       const response = await fetch(`${API_URL}/api/ai-configs`);
       if (!response.ok) {
-        const errorData: MutateConfigResponse = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const errorData: MutateConfigResponse = await response.json().catch(() => ({ error: `HTTP 错误！状态: ${response.status}` }));
+        throw new Error(errorData.error || `HTTP 错误！状态: ${response.status}`);
       }
       const data: AllAIConfigsResponse = await response.json();
       setConfigurations(data.configurations.map(c => ({ ...c, isActive: c.id === data.activeConfigId })));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-      console.error('Failed to fetch AI configurations:', errorMessage);
+      const errorMessage = err instanceof Error ? err.message : '发生未知错误';
+      console.error('获取AI配置失败:', errorMessage);
       setError(errorMessage);
       setConfigurations([]);
     } finally {
@@ -101,7 +102,7 @@ export default function AIProviderSettingsPage() {
     setSuccessMessage(null);
 
     if (!newConfigForm.name || !newConfigForm.apiKey || !newConfigForm.modelName) {
-      setError("Name, API Key, and Model Name are required.");
+      setError("名称、API密钥和模型名称为必填项。");
       setIsSubmitting(false);
       return;
     }
@@ -119,15 +120,15 @@ export default function AIProviderSettingsPage() {
       });
       const result: MutateConfigResponse = await response.json();
       if (!response.ok) {
-        throw new Error(result.error || `HTTP error! status: ${response.status}`);
+        throw new Error(result.error || `HTTP 错误！状态: ${response.status}`);
       }
-      setSuccessMessage(result.message || `Configuration ${editingConfigId ? 'updated' : 'added'} successfully!`);
+      setSuccessMessage(result.message || `配置已成功${editingConfigId ? '更新' : '添加'}！`);
       setNewConfigForm(initialNewConfigFormData);
       setEditingConfigId(null);
       await fetchConfigurations(); 
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-      console.error(`Failed to ${editingConfigId ? 'update' : 'add'} AI configuration:`, errorMessage);
+      const errorMessage = err instanceof Error ? err.message : '发生未知错误';
+      console.error(`未能${editingConfigId ? '更新' : '添加'}AI配置:`, errorMessage);
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -145,13 +146,13 @@ export default function AIProviderSettingsPage() {
       });
       const result: MutateConfigResponse = await response.json();
       if (!response.ok) {
-        throw new Error(result.error || `HTTP error! status: ${response.status}`);
+        throw new Error(result.error || `HTTP 错误！状态: ${response.status}`);
       }
-      setSuccessMessage(result.message || 'Configuration set to active!');
+      setSuccessMessage(result.message || '配置已激活！');
       await fetchConfigurations(); 
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-      console.error('Failed to set active AI configuration:', errorMessage);
+      const errorMessage = err instanceof Error ? err.message : '发生未知错误';
+      console.error('激活AI配置失败:', errorMessage);
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -180,13 +181,13 @@ export default function AIProviderSettingsPage() {
       });
       const result: MutateConfigResponse = await response.json(); 
       if (!response.ok) {
-        throw new Error(result.error || `HTTP error! status: ${response.status}`);
+        throw new Error(result.error || `HTTP 错误！状态: ${response.status}`);
       }
-      setSuccessMessage(result.message || 'Configuration deleted successfully!');
+      setSuccessMessage(result.message || '配置已成功删除！');
       await fetchConfigurations(); 
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-      console.error('Failed to delete AI configuration:', errorMessage);
+      const errorMessage = err instanceof Error ? err.message : '发生未知错误';
+      console.error('删除AI配置失败:', errorMessage);
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -223,31 +224,50 @@ export default function AIProviderSettingsPage() {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif', maxWidth: '1000px', margin: '0 auto' }}>
-      <h1 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-        AI Provider Configurations
+    <div className={styles.pageContainer}>
+      <h1 className={styles.pageTitle}>
+        {/* Optional: Add an icon here if you have one, e.g., <i className="fas fa-cogs"></i> */}
+        AI 提供商配置
       </h1>
 
-      {isLoading && !isSubmitting && <p>Loading configurations...</p>}
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+      {isLoading && !isSubmitting && <p className={styles.loadingMessage}>正在加载配置...</p>}
+      {error && <p className={styles.errorMessage}><i className="fas fa-exclamation-circle mr-2"></i>错误: {error}</p>}
+      {successMessage && <p className={styles.successMessage}><i className="fas fa-check-circle mr-2"></i>{successMessage}</p>}
 
-      <section ref={formRef} style={{ marginBottom: '2rem', padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-        <h2 style={{ marginTop: '0', marginBottom: '1rem' }}>
-          {editingConfigId ? 'Edit Configuration' : 'Add New Configuration'}
+      <section ref={formRef} className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          {editingConfigId ? '编辑配置' : '添加新配置'}
         </h2>
-        <form onSubmit={handleSubmitForm}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem' }}>Configuration Name:</label>
-            <input type="text" id="name" name="name" value={newConfigForm.name} onChange={handleFormInputChange} required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} disabled={isSubmitting}/>
+        <form onSubmit={handleSubmitForm} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="name" className={styles.label}>配置名称:</label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              value={newConfigForm.name} 
+              onChange={handleFormInputChange} 
+              required 
+              className={styles.input} 
+              disabled={isSubmitting}
+            />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="apiBaseUrl" style={{ display: 'block', marginBottom: '0.5rem' }}>API Base URL:</label>
-            <input type="text" id="apiBaseUrl" name="apiBaseUrl" value={newConfigForm.apiBaseUrl} onChange={handleFormInputChange} placeholder="e.g., https://api.openai.com/v1" style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} disabled={isSubmitting}/>
+          <div className={styles.formGroup}>
+            <label htmlFor="apiBaseUrl" className={styles.label}>API 基础 URL (可选):</label>
+            <input 
+              type="text" 
+              id="apiBaseUrl" 
+              name="apiBaseUrl" 
+              value={newConfigForm.apiBaseUrl} 
+              onChange={handleFormInputChange} 
+              placeholder="例如：https://api.openai.com/v1" 
+              className={styles.input}
+              disabled={isSubmitting}
+            />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="apiKey" style={{ display: 'block', marginBottom: '0.5rem' }}>API Key:</label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className={styles.formGroup}>
+            <label htmlFor="apiKey" className={styles.label}>API 密钥:</label>
+            <div className="flex items-center gap-2">
               <input 
                 type={isApiKeyVisible ? 'text' : 'password'} 
                 id="apiKey" 
@@ -255,32 +275,51 @@ export default function AIProviderSettingsPage() {
                 value={newConfigForm.apiKey} 
                 onChange={handleFormInputChange} 
                 required 
-                placeholder={editingConfigId ? "Leave blank to keep current key" : "Enter API Key"} 
-                style={{ flexGrow: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} 
+                placeholder={editingConfigId ? "留空以保持当前密钥" : "输入 API 密钥"} 
+                className={`${styles.input} flex-grow`} 
                 disabled={isSubmitting}
               />
               <button 
                 type="button" 
                 onClick={toggleApiKeyVisibility} 
                 disabled={isSubmitting}
-                style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#f0f0f0'}}
-                title={isApiKeyVisible ? "Hide API Key" : "Show API Key"}
+                className={styles.apiKeyToggle}
+                title={isApiKeyVisible ? "隐藏 API 密钥" : "显示 API 密钥"}
               >
-                <i className={isApiKeyVisible ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+                {isApiKeyVisible ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
               </button>
             </div>
           </div>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label htmlFor="modelName" style={{ display: 'block', marginBottom: '0.5rem' }}>Default Model Name:</label>
-            <input type="text" id="modelName" name="modelName" value={newConfigForm.modelName} onChange={handleFormInputChange} required placeholder="e.g., gpt-4, deepseek-chat" style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} disabled={isSubmitting}/>
+          <div className={styles.formGroup}>
+            <label htmlFor="modelName" className={styles.label}>默认模型名称:</label>
+            <input 
+              type="text" 
+              id="modelName" 
+              name="modelName" 
+              value={newConfigForm.modelName} 
+              onChange={handleFormInputChange} 
+              required 
+              placeholder="例如：gpt-4, deepseek-chat"
+              className={styles.input} 
+              disabled={isSubmitting}
+            />
           </div>
-          <div style={{display: 'flex', gap: '1rem'}}> {/* Wrapper for buttons */}
-            <button type="submit" disabled={isSubmitting} style={{ padding: '0.75rem 1.5rem', backgroundColor: isSubmitting ? '#ccc' : '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-              {isSubmitting ? 'Processing...' : (editingConfigId ? 'Save Changes' : 'Add Configuration')}
+          <div className={styles.buttonGroup}>
+            <button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className={`${styles.button} ${styles.buttonPrimary}`}
+            >
+              {isSubmitting ? '处理中...' : (editingConfigId ? '保存更改' : '添加配置')}
             </button>
             {editingConfigId && (
-              <button type="button" onClick={cancelEdit} disabled={isSubmitting} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-                Cancel Edit
+              <button 
+                type="button" 
+                onClick={cancelEdit} 
+                disabled={isSubmitting} 
+                className={`${styles.button} ${styles.buttonSecondary}`}
+              >
+                取消编辑
               </button>
             )}
           </div>
@@ -288,34 +327,50 @@ export default function AIProviderSettingsPage() {
       </section>
 
       {/* Section to Display Existing Configurations */}
-      <section>
-        <h2 style={{ marginBottom: '1rem' }}>Saved Configurations</h2>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>已保存的配置</h2>
         {configurations.length === 0 && !isLoading && (
-          <p>No configurations found. Please add one using the form above.</p>
+          <p className="text-gray-500">未找到任何配置。请使用上面的表单添加一个。</p>
         )}
         {configurations.length > 0 && (
-          <ul style={{ listStyle: 'none', padding: '0', display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+          <ul className={styles.configList}>
             {configurations.map((config) => (
-              <li key={config.id} style={{ width: 'calc(33.333% - 0.75rem)', boxSizing: 'border-box', padding: '1rem', border: '1px solid #eee', borderRadius: '8px', backgroundColor: config.isActive ? '#e6f7ff' : '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <li 
+                key={config.id} 
+                className={`${styles.configCard} ${config.isActive ? styles.configCardActive : ''}`}
+              >
                 <div> 
-                  <h3 style={{ marginTop: '0', marginBottom: '0.5rem', fontSize: '1.1em' }}>
-                    {config.name} {config.isActive && <span style={{ fontSize: '0.8em', color: '#096dd9', fontWeight: 'normal' }}>(Active)</span>}
+                  <h3 className={styles.configCardHeader}>
+                    {config.name} {config.isActive && <span className={styles.activeBadge}>当前活动</span>}
                   </h3>
-                  <p style={{ margin: '0.25rem 0', fontSize: '0.9em' }}><strong>API URL:</strong> {config.apiBaseUrl || 'Not set'}</p>
-                  <p style={{ margin: '0.25rem 0', fontSize: '0.9em' }}><strong>Model:</strong> {config.modelName}</p>
-                  <p style={{ margin: '0.25rem 0 0.75rem 0', fontSize: '0.9em' }}><strong>API Key:</strong> ********</p>
+                  <p className={styles.configDetail}><strong className={styles.configDetailKey}>API URL:</strong> {config.apiBaseUrl || '未设置'}</p>
+                  <p className={styles.configDetail}><strong className={styles.configDetailKey}>模型:</strong> {config.modelName}</p>
+                  <p className={`${styles.configDetail} mb-3`}><strong className={styles.configDetailKey}>API 密钥:</strong> <span className="font-mono select-none">********</span></p>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}> 
+                <div className={styles.configActions}>
                   {!config.isActive && (
-                    <button onClick={() => handleSetActive(config.id)} disabled={isSubmitting} style={{ padding: '0.4rem 0.8rem', fontSize: '0.9em', backgroundColor: isSubmitting ? '#ccc' : '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-                      {isSubmitting ? '...' : 'Set Active'}
+                    <button 
+                      onClick={() => handleSetActive(config.id)} 
+                      disabled={isSubmitting} 
+                      className={`${styles.button} ${styles.buttonSuccess}`}
+                    >
+                      {isSubmitting ? <><i className="fas fa-spinner fa-spin mr-1"></i>处理中</> : '设为活动'}
                     </button>
                   )}
-                  <button onClick={() => handleEdit(config)} disabled={isSubmitting} style={{ padding: '0.4rem 0.8rem', fontSize: '0.9em', backgroundColor: isSubmitting ? '#ccc' : '#ffc107', color: 'black', border: 'none', borderRadius: '4px', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-                    Edit
+                  <button 
+                    onClick={() => handleEdit(config)} 
+                    disabled={isSubmitting} 
+                    className={`${styles.button} ${styles.buttonWarning}`}
+                  >
+                    编辑
                   </button>
-                  <button onClick={() => openDeleteModal(config)} disabled={isSubmitting || config.isActive} title={config.isActive ? "Cannot delete active configuration" : "Delete configuration"} style={{ padding: '0.4rem 0.8rem', fontSize: '0.9em', backgroundColor: isSubmitting || config.isActive ? '#ccc' : '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: isSubmitting || config.isActive ? 'not-allowed' : 'pointer' }}>
-                    {isSubmitting ? '...' : 'Delete'}
+                  <button 
+                    onClick={() => openDeleteModal(config)} 
+                    disabled={isSubmitting || config.isActive} 
+                    title={config.isActive ? "无法删除活动配置" : "删除配置"} 
+                    className={`${styles.button} ${styles.buttonDanger}`}
+                  >
+                    {isSubmitting ? <><i className="fas fa-spinner fa-spin mr-1"></i>...</> : '删除'}
                   </button>
                 </div>
               </li>
@@ -326,33 +381,24 @@ export default function AIProviderSettingsPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && configToDelete && (
-        <div style={{
-          position: 'fixed', 
-          top: '0', 
-          left: '0', 
-          right: '0', 
-          bottom: '0', 
-          backgroundColor: 'rgba(0,0,0,0.5)', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          zIndex: 1000 // Ensure it's on top
-        }}>
-          <div style={{
-            backgroundColor: 'white', 
-            padding: '2rem', 
-            borderRadius: '8px', 
-            boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{marginTop: 0}}>Confirm Deletion</h3>
-            <p>Are you sure you want to delete the configuration "<strong>{configToDelete.name}</strong>"?</p>
-            <div style={{marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem'}}>
-              <button onClick={closeDeleteModal} disabled={isSubmitting} style={{padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer'}}>
-                Cancel
+        <div className={`${styles.modalOverlay} ${showDeleteModal ? styles.modalOverlayVisible : ''}`}>
+          <div className={styles.modalContent}>
+            <h3 className={styles.modalTitle}>确认删除</h3>
+            <p className={styles.modalText}>您确定要删除配置 " <strong className="font-medium">{configToDelete.name}</strong> " 吗？</p>
+            <div className={styles.modalActions}>
+              <button 
+                onClick={closeDeleteModal} 
+                disabled={isSubmitting} 
+                className={`${styles.button} ${styles.buttonSecondary}`}
+              >
+                取消
               </button>
-              <button onClick={confirmDeleteHandler} disabled={isSubmitting} style={{padding: '0.5rem 1rem', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}>
-                {isSubmitting ? 'Deleting...' : 'Confirm Delete'}
+              <button 
+                onClick={confirmDeleteHandler} 
+                disabled={isSubmitting} 
+                className={`${styles.button} ${styles.buttonDanger}`}
+              >
+                {isSubmitting ? <><i className="fas fa-spinner fa-spin mr-1"></i>正在删除...</> : '确认删除'}
               </button>
             </div>
           </div>
