@@ -23,6 +23,8 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
   // Added chart state
   const [chartUrl, setChartUrl] = useState<string | null>(null);
   const [isChartLoading, setIsChartLoading] = useState(false);
+  const [showLargeChart, setShowLargeChart] = useState(false);
+  const [chartFileName, setChartFileName] = useState<string | null>(null);
   const codeRef = useRef<HTMLPreElement>(null);
 
   // 当代码变化时应用语法高亮并检查是否有图表
@@ -45,60 +47,62 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
         .then(data => {
           if (data.chartUrl) {
             setChartUrl(data.chartUrl);
+            setChartFileName(data.fileName || null);
+            console.log("Chart URL received:", data.chartUrl);
           } else {
             setChartUrl(null);
+            setChartFileName(null);
           }
         })
         .catch(err => {
           console.error('Error fetching chart:', err);
           setChartUrl(null);
+          setChartFileName(null);
         })
         .finally(() => {
           setIsChartLoading(false);
         });
     } else {
       setChartUrl(null);
+      setChartFileName(null);
     }
   }, [code]);
 
   // Handle chart download
-  const handleDownloadChart = () => {
+  const handleDownloadChart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 阻止事件冒泡到父元素
+    
     if (chartUrl) {
-      // Create a temporary link element
+      // 创建一个新的标签页下载图表而不是直接在当前页面打开
       const link = document.createElement('a');
       link.href = chartUrl;
-      link.download = `chart-${Date.now()}.png`;
+      link.download = chartFileName || `chart-${Date.now()}.png`;
+      link.target = '_blank';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
   };
 
+  // 点击图表时放大显示
+  const handleChartClick = () => {
+    setShowLargeChart(true);
+  };
+
+  // 关闭放大的图表
+  const handleCloseLargeChart = () => {
+    setShowLargeChart(false);
+  };
+
   // Enhanced copy code function
   const handleCopyCode = () => {
     if (code) {
-      // Use clipboard API
-      try {
-        navigator.clipboard.writeText(code).then(() => {
-          onCopyCode();
-        });
-      } catch (err) {
-        console.error('Failed to copy: ', err);
-        // Fallback copy mechanism
-        const textarea = document.createElement('textarea');
-        textarea.value = code;
-        textarea.style.position = 'fixed';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        onCopyCode();
-      }
+      onCopyCode();
     }
   };
 
   return (
-    <section className="output-section">
+    <section className="output-section ">
       <div className="output-header">
         <h2>
           <i className="fas fa-laptop-code"></i> 生成的 Pandas 代码
@@ -155,8 +159,13 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
       {chartUrl && (
         <div className="chart-container">
           <h3><i className="fas fa-chart-bar"></i> 生成的图表</h3>
-          <div className="chart-image">
-            <img src={chartUrl} alt="生成的数据图表" />
+          <div className="chart-image" onClick={handleChartClick}>
+            <img 
+              src={chartUrl} 
+              alt="生成的数据图表" 
+              style={{ cursor: 'pointer' }} 
+              title="点击查看大图"
+            />
           </div>
           <div className="chart-actions">
             <button 
@@ -166,6 +175,29 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
             >
               <i className="fas fa-download"></i> 下载图表
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 大图预览模态框 */}
+      {showLargeChart && chartUrl && (
+        <div className="chart-modal-overlay" onClick={handleCloseLargeChart}>
+          <div className="chart-modal">
+            <div className="chart-modal-content" onClick={e => e.stopPropagation()}>
+              <button className="chart-modal-close" onClick={handleCloseLargeChart}>
+                <i className="fas fa-times"></i>
+              </button>
+              <img src={chartUrl} alt="图表大图" className="chart-modal-image" />
+              <div className="chart-modal-actions">
+                <button 
+                  onClick={handleDownloadChart} 
+                  className="download-btn"
+                  title="下载图表"
+                >
+                  <i className="fas fa-download"></i> 下载图表
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

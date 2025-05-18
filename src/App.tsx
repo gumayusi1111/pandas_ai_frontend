@@ -35,8 +35,8 @@ function App() {
   useEffect(() => {
     fetchHistory();
     fetchSupportedFormats();
-    // 设置初始滚动位置为20px
-    window.scrollTo(0, 20);
+    // 设置初始滚动位置为240px
+    window.scrollTo(0, 240);
   }, []);
 
   // Fetch history from API
