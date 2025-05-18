@@ -10,6 +10,7 @@ interface CodeOutputProps {
   progress: number;
   tokens: number;
   onCopyCode: () => void;
+  initialChartUrl?: string | null;
 }
 
 const CodeOutput: React.FC<CodeOutputProps> = ({
@@ -18,14 +19,25 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
   error,
   progress,
   tokens,
-  onCopyCode
+  onCopyCode,
+  initialChartUrl
 }) => {
   // Added chart state
-  const [chartUrl, setChartUrl] = useState<string | null>(null);
+  const [chartUrl, setChartUrl] = useState<string | null>(initialChartUrl || null);
   const [isChartLoading, setIsChartLoading] = useState(false);
   const [showLargeChart, setShowLargeChart] = useState(false);
   const [chartFileName, setChartFileName] = useState<string | null>(null);
   const codeRef = useRef<HTMLPreElement>(null);
+
+  // 当initialChartUrl变化时更新chartUrl
+  useEffect(() => {
+    if (initialChartUrl) {
+      setChartUrl(initialChartUrl);
+      // 从URL中提取文件名
+      const urlParts = initialChartUrl.split('/');
+      setChartFileName(urlParts[urlParts.length - 1]);
+    }
+  }, [initialChartUrl]);
 
   // 当代码变化时应用语法高亮并检查是否有图表
   useEffect(() => {
@@ -33,8 +45,8 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
       hljs.highlightElement(codeRef.current.querySelector('code') as HTMLElement);
     }
 
-    // Check for matplotlib chart in code
-    if (code && code.includes('plt.')) {
+    // 如果没有initialChartUrl且代码包含plt.，尝试从API获取图表
+    if (!initialChartUrl && code && code.includes('plt.')) {
       setIsChartLoading(true);
       // Check if we have a chart from latest code execution
       fetch(`${API_URL}/api/latest_chart`)
@@ -62,11 +74,11 @@ const CodeOutput: React.FC<CodeOutputProps> = ({
         .finally(() => {
           setIsChartLoading(false);
         });
-    } else {
+    } else if (!initialChartUrl && (!code || !code.includes('plt.'))) {
       setChartUrl(null);
       setChartFileName(null);
     }
-  }, [code]);
+  }, [code, initialChartUrl]);
 
   // Handle chart download
   const handleDownloadChart = (e: React.MouseEvent) => {

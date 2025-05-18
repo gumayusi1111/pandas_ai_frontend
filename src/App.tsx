@@ -16,6 +16,7 @@ interface HistoryItem {
   code: string;
   file?: string;
   tokens?: number;
+  chartUrl?: string;
 }
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
   const [showCopyNotification, setShowCopyNotification] = useState(false);
   const [showModelNotification, setShowModelNotification] = useState(false);
   const [currentModel, setCurrentModel] = useState('');
+  const [currentChartUrl, setCurrentChartUrl] = useState<string | null>(null);
 
   // Fetch history and supported formats on component mount
   useEffect(() => {
@@ -120,6 +122,15 @@ function App() {
       
       setGeneratedCode(processedCode);
       setCurrentTokens(result.tokens || 0);
+      
+      // 检查API响应中是否有chartUrl
+      if (result.chartUrl) {
+        setCurrentChartUrl(result.chartUrl);
+        console.log('Chart URL from API:', result.chartUrl);
+      } else {
+        setCurrentChartUrl(null);
+      }
+      
       completeProgress();
       
       // Refresh history
@@ -160,6 +171,7 @@ function App() {
   const loadHistoryItem = (item: HistoryItem) => {
     setGeneratedCode(item.code || '# 没有可用代码');
     setCurrentTokens(item.tokens || 0);
+    setCurrentChartUrl(item.chartUrl || null);
   };
 
   // Handle model change
@@ -313,6 +325,7 @@ function App() {
               progress={progress}
               tokens={currentTokens}
               onCopyCode={handleCopyCode}
+              initialChartUrl={currentChartUrl}
             />
           </main>
 
